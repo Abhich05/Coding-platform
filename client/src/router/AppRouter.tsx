@@ -9,6 +9,7 @@ import Profile from "../pages/Dashboard/Profile";
 import Practise from "../pages/Dashboard/Practise";
 import Jobs from "../pages/Dashboard/Jobs";
 
+
 const AppRouter: FC = () => {
   return (
     <Routes>
@@ -23,7 +24,6 @@ const AppRouter: FC = () => {
         <Route path="practise" element={<Practise />} />
         <Route path="jobs" element={<Jobs />} />
       </Route>
-
       <Route path="*" element={<div style={{ padding: 24 }}>404 - Not Found</div>} />
     </Routes>
   );
