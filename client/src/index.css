@@ -1,1 +1,63 @@
+/* src/index.css */
 @import "tailwindcss";
+@reference utilities;
+
+/* Global variables */
+:root {
+  --bg-1: #050617;
+  --bg-2: #07102a;
+}
+
+/* Full-height */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #e6eef8;
+  background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
+}
+
+/* components layer */
+@layer components {
+  .card-glass {
+    background: rgba(4, 6, 12, 0.6); /* dark translucent */
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 1rem;
+    padding: 1.2rem;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    color: #e6eef8;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-cyan-400 text-black font-semibold;
+  }
+}
+
+/* small helper classes for focus and transitions (if you need more, use tailwind utilities directly) */
+* {
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+/* improve focus outlines globally for keyboard users */
+a:focus,
+button:focus,
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12), 0 2px 8px rgba(2, 6, 23, 0.35);
+}
+
+/* small responsive helpers */
+@media (max-width: 767px) {
+  .card-glass {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+}
