@@ -2,10 +2,6 @@
 import { useEffect, useState } from "react";
 import type { FC, ComponentType } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import SignUpPage from './auth/SignUp';
-import SignInPage from './auth/SignIn';
-
-
 
 /* Inline icons (kept minimal) */
 const Icon: Record<string, ComponentType> = {
@@ -65,12 +61,6 @@ const DashboardLayout: FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // auth UI state (fake for now)
-  const [userName, setUserName] = useState<string | null>(null);
-
-  // modal controls
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
   // Auto close mobile menu on window resize > md
   useEffect(() => {
     const onResize = () => {
@@ -217,40 +207,6 @@ const DashboardLayout: FC = () => {
               </div>
             </div>
           </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsSignUpOpen(true)}
-              className="inline-flex items-center justify-center rounded-xl border border-white/80 px-4 py-2 text-sm font-medium text-white/90 hover:border-white hover:bg-white/10 transition-colors"
-            >
-              <span>Log in</span>
-            </button>
-            <div className="flex items-center gap-3">
-  <div className="text-right hidden md:block">
-    <div className="text-sm">
-      {userName ? userName : 'Unknown User'}
-    </div>
-    <div className="text-xs text-gray-400">
-      {userName ? 'Member' : 'Guest'}
-    </div>
-  </div>
-  <div
-    className={`w-9 h-9 rounded-full flex items-center justify-center font-semibold
-      ${userName
-        ? 'bg-gradient-to-br from-indigo-500 to-cyan-400 text-black'
-        : 'bg-gradient-to-br from-gray-500 to-gray-700 text-white'
-      }`}
-  >
-    {userName
-      ? userName
-          .split(' ')
-          .map(part => part[0]?.toUpperCase())
-          .join('')
-      : '?'}
-  </div>
-</div>
-
-          </div>
         </header>
 
         {/* Content area constrained */}
@@ -271,26 +227,6 @@ const DashboardLayout: FC = () => {
           </div>
         </main>
       </div>
-          {/* Auth modals */}
-      {isSignUpOpen && (
-        <SignUpPage
-          isModal
-          onClose={() => setIsSignUpOpen(false)}
-          onSwitchToSignIn={() => {
-            setIsSignUpOpen(false);
-            setIsSignInOpen(true);
-          }}
-        />
-      )}
-
-      <SignInPage
-        isOpen={isSignInOpen}
-        onClose={() => setIsSignInOpen(false)}
-        onSignedIn={(name) => {
-          setUserName(name);
-          setIsSignInOpen(false);
-        }}
-      />
     </div> 
   );
 };
