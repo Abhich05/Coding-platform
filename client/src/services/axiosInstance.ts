@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
       // Token expired or invalid - clear data and redirect
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user-storage'); // Clear Zustand persistence
-      window.location.href = '/login'; 
+window.location.href = '/auth/signin';
     }
     return Promise.reject(error);
   }

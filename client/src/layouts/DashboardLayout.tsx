@@ -1,9 +1,8 @@
 // src/layouts/DashboardLayout.tsx
 import { useEffect, useState } from "react";
 import type { FC, ComponentType } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
-/* Inline icons (kept minimal) */
 const Icon: Record<string, ComponentType> = {
   Overview: () => (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -46,10 +45,7 @@ const NavItem: FC<NavProps> = ({ to, label, Icon, collapsed, end }) => {
         ].join(" ")
       }
     >
-      <span
-        className="text-inherit shrink-0"
-        aria-hidden
-      >
+      <span className="text-inherit shrink-0" aria-hidden>
         <Icon />
       </span>
       {!collapsed && <span className="truncate">{label}</span>}
@@ -60,6 +56,15 @@ const NavItem: FC<NavProps> = ({ to, label, Icon, collapsed, end }) => {
 const DashboardLayout: FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Logout handler
+  const handleLogout = async () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/auth/signin", { replace: true });
+  };
 
   // Auto close mobile menu on window resize > md
   useEffect(() => {
@@ -71,17 +76,19 @@ const DashboardLayout: FC = () => {
   }, []);
 
   return (
-    // top-level dark background
     <div className="flex min-h-screen text-gray-100 bg-[#07102a]">
       {/* Sidebar - desktop */}
       <aside
-        className={`hidden md:flex flex-col shrink-0 transition-all duration-300 ${collapsed ? "w-20" : "w-72"
-          } bg-[rgba(6,10,20,0.6)] border-r border-white/6`}
+        className={`hidden md:flex flex-col shrink-0 transition-all duration-300 ${
+          collapsed ? "w-20" : "w-72"
+        } bg-[rgba(6,10,20,0.6)] border-r border-white/6`}
       >
         <div className="px-4 py-4 flex items-center justify-between border-b border-white/6">
           <div className="flex items-center gap-3">
             <div
-              className={`rounded-md ${collapsed ? "w-9 h-9" : "w-12 h-12"} bg-gradient-to-br from-indigo-600 to-cyan-400 text-black flex items-center justify-center font-bold`}
+              className={`rounded-md ${
+                collapsed ? "w-9 h-9" : "w-12 h-12"
+              } bg-gradient-to-br from-indigo-600 to-cyan-400 text-black flex items-center justify-center font-bold`}
             >
               {collapsed ? "P" : "Plat"}
             </div>
@@ -113,27 +120,44 @@ const DashboardLayout: FC = () => {
         </div>
 
         <nav className="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
-          {/* pass 'end' for exact active match on Overview */}
-          <NavItem to="/dashboard/overview" label="Overview" Icon={Icon.Overview} collapsed={collapsed} end />
+          <NavItem
+            to="/dashboard/overview"
+            label="Overview"
+            Icon={Icon.Overview}
+            collapsed={collapsed}
+            end
+          />
           <NavItem to="/dashboard/practise" label="Practise" Icon={Icon.Practise} collapsed={collapsed} />
           <NavItem to="/dashboard/jobs" label="Jobs" Icon={Icon.Jobs} collapsed={collapsed} />
           <NavItem to="/dashboard/profile" label="Profile" Icon={Icon.Profile} collapsed={collapsed} />
         </nav>
 
-        <div className="px-3 py-3 border-t border-white/6">
+        {/* User + logout in sidebar bottom */}
+        <div className="px-3 py-3 border-t border-white/6 flex items-center justify-between">
           {!collapsed ? (
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-black font-semibold">AR</div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-black font-semibold">
+                AR
+              </div>
               <div>
                 <div className="text-sm">User 1</div>
                 <div className="text-xs text-gray-400">Frontend Dev</div>
               </div>
             </div>
           ) : (
-            <div className="flex justify-center">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-black">AR</div>
+            <div className="flex justify-center flex-1">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-black">
+                AR
+              </div>
             </div>
           )}
+
+          <button
+            onClick={handleLogout}
+            className="ml-2 px-2 py-1 rounded-md text-[11px] bg-red-500/90 hover:bg-red-500 text-white"
+          >
+            Logout
+          </button>
         </div>
       </aside>
 
@@ -141,17 +165,26 @@ const DashboardLayout: FC = () => {
       <div className="md:hidden w-full bg-transparent">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-gradient-to-br from-indigo-600 to-cyan-400 text-black flex items-center justify-center font-bold">Plat</div>
+            <div className="w-10 h-10 rounded-md bg-gradient-to-br from-indigo-600 to-cyan-400 text-black flex items-center justify-center font-bold">
+              Plat
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
+
             <button
               onClick={() => setMobileOpen(true)}
               className="p-2 rounded-md hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-cyan-400"
               aria-label="Open menu"
             >
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M4 6h16M4 12h16M4 18h16"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           </div>
@@ -165,22 +198,44 @@ const DashboardLayout: FC = () => {
           <aside className="absolute left-0 top-0 bottom-0 w-72 bg-[rgba(6,10,20,0.95)] border-r border-white/6 p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-md bg-gradient-to-br from-indigo-600 to-cyan-400 text-black flex items-center justify-center font-bold">Plat</div>
+                <div className="w-10 h-10 rounded-md bg-gradient-to-br from-indigo-600 to-cyan-400 text-black flex items-center justify-center font-bold">
+                  Plat
+                </div>
                 <div>
                   <div className="text-sm font-semibold">Platform</div>
                   <div className="text-xs text-gray-400">Pro Dashboard</div>
                 </div>
               </div>
-              <button className="p-2 rounded-md hover:bg-white/5" onClick={() => setMobileOpen(false)} aria-label="Close menu">
+              <button
+                className="p-2 rounded-md hover:bg-white/5"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close menu"
+              >
                 ✕
               </button>
             </div>
 
             <nav className="flex flex-col gap-2">
-              <NavItem to="/dashboard/overview" label="Overview" Icon={Icon.Overview} collapsed={false} end />
-              <NavItem to="/dashboard/practise" label="Practise" Icon={Icon.Practise} collapsed={false} />
+              <NavItem
+                to="/dashboard/overview"
+                label="Overview"
+                Icon={Icon.Overview}
+                collapsed={false}
+                end
+              />
+              <NavItem
+                to="/dashboard/practise"
+                label="Practise"
+                Icon={Icon.Practise}
+                collapsed={false}
+              />
               <NavItem to="/dashboard/jobs" label="Jobs" Icon={Icon.Jobs} collapsed={false} />
-              <NavItem to="/dashboard/profile" label="Profile" Icon={Icon.Profile} collapsed={false} />
+              <NavItem
+                to="/dashboard/profile"
+                label="Profile"
+                Icon={Icon.Profile}
+                collapsed={false}
+              />
             </nav>
           </aside>
         </div>
@@ -201,12 +256,19 @@ const DashboardLayout: FC = () => {
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300" aria-hidden>
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                  <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path
+                    d="M21 21l-4.35-4.35"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
                   <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
               </div>
             </div>
           </div>
+
+
         </header>
 
         {/* Content area constrained */}
@@ -220,14 +282,14 @@ const DashboardLayout: FC = () => {
               </div>
             </div>
 
-            {/* sticky-ish footer: push to bottom visually when content short */}
             <footer className="mt-8 text-xs text-gray-500 flex items-center justify-start">
               <div>© {new Date().getFullYear()} Platform · Built with ❤️</div>
             </footer>
           </div>
         </main>
       </div>
-    </div> 
+    </div>
   );
 };
+
 export default DashboardLayout;

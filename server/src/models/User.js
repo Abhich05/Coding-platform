@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     } 
 });
+userSchema.pre('save', function(next) {
+  if (!this.name && this.email) {
+    this.name = this.email.split('@')[0];
+  }
+  next();
+});
 
 const userModel=mongoose.model("User",userSchema);
 

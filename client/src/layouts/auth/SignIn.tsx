@@ -25,8 +25,9 @@ const SignInPage: React.FC<SignInPageProps> = ({ isOpen = true, onClose, onSigne
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  console.log("SUBMIT CLICKED", formData);
     if (!formData.email || !formData.password) {
       setErrors({ email: 'Credentials are required' });
       return;

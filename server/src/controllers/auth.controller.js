@@ -22,27 +22,27 @@ async function registerUser(req,res) {
         })
     }
 }
-async function loginUser(req,res){
-    try{
-        const userDetail=await authService.login(req.body);
-        const token= await authService.generateToken(userDetail);
-
-        res.cookie("token",token);
-
-        res.status(200).json({
-            message:"User Logined Sucessfully!",
-            data:{
-                id:userDetail._id,
-                email:userDetail.email
-            }
-        })
-    }
-    catch(e){
-       res.status(400).json({
-            message:e.message
-        })
-    }
+async function loginUser(req, res) {
+  try {
+    const userDetail = await authService.login(req.body);
+    const token = await authService.generateToken(userDetail);
+    
+    // Change: return token in JSON response, not cookie
+    res.status(200).json({
+      message: "User Logged in Successfully!",
+      token: token,  // ← ADD THIS LINE
+      user: {
+        id: userDetail._id,
+        email: userDetail.email
+      }
+    });
+  } catch (e) {
+    res.status(400).json({
+      message: e.message
+    });
+  }
 }
+
 
 async function getMe(req,res) {
     try {

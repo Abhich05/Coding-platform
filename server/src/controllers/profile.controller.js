@@ -6,7 +6,18 @@ exports.getMe = async (req, res) => {
   try {
     const profile = await profileService.getMyProfile(req.user._id);
 
-    return success(res, profile || null);
+    // If no profile exists, we still return the user's email from the auth object
+    if (!profile) {
+      return success(res, { email: req.user.email });
+    }
+
+    // Flatten the populated userId.email into a top-level 'email' property
+    const responseData = {
+      ...profile._doc,
+      email: profile.userId ? profile.userId.email : req.user.email,
+    };
+
+    return success(res, responseData);
   } catch (err) {
     return error(res, err.message);
   }
@@ -24,7 +35,12 @@ exports.updateProfile = async (req, res) => {
       avatarUrl,
     });
 
-    return success(res, profile);
+    const responseData = {
+      ...profile._doc,
+      email: profile.userId ? profile.userId.email : req.user.email,
+    };
+
+    return success(res, responseData);
   } catch (err) {
     return error(res, err.message);
   }
