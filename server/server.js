@@ -3,15 +3,18 @@ const app = express();
 const cors = require("cors"); 
 app.use(cors()); 
 app.use(express.json()); 
-const authRoutes=require('./routes/auth.routes');
+// const authRoutes=require('./routes/auth.routes');
+
 
 // //main routes 
-app.use("/api/auth", require("./routes/auth.routes")); 
+app.use("/api/auth", require("./src/routes/auth.routes.js")); 
+
 // app.use("/api/profile", require("./routes/profile.routes")); 
 // app.use("/api/practice", require("./routes/practice.routes")); 
 // app.use("/api/problems", require("./routes/problems.routes")); 
 // app.use("/api/tests", require("./routes/tests.routes")); 
-// app.use("/api/jobs", require("./routes/jobs.routes")); 
+app.use("/api/jobs", require("./src/routes/jobs.routes.js"));
+
 
 //server starting
 app.listen(4000, () => console.log("Server running on 4000"));
