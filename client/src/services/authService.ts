@@ -5,28 +5,50 @@ export const authService = {
   // Login User
   login: async (credentials: any) => {
     const response = await axiosInstance.post("/auth/login", credentials);
-    // response.data = { message, data: { id, email } }
-
-    // If you later add token, keep this pattern
+    
+    // Store token if returned
     if ((response.data as any).token) {
       localStorage.setItem("auth_token", (response.data as any).token);
     }
 
-    // Store the data object that contains id + email
-    if (response.data?.data) {
+    // Store user data (handles both {data: {...}} and {user: {...}})
+    const userData = response.data?.data || response.data?.user;
+    if (userData) {
       localStorage.setItem(
         "user-storage",
-        JSON.stringify(response.data.data)
+        JSON.stringify(userData)  // {id, email}
       );
     }
 
     return response.data;
   },
 
-  // Register User
+  // Register User - FIXED: Now saves user data like login
   register: async (userData: any) => {
-    const response = await axiosInstance.post("/auth/register", userData);
-    return response.data;
+    try {
+      const response = await axiosInstance.post("/auth/register", userData);
+      
+      // Backend returns: {message: "...", data: {id, email}}
+      const backendData = response.data;
+      
+      // Save user data to localStorage (same format as login)
+      if (backendData?.data) {
+        localStorage.setItem(
+          "user-storage", 
+          JSON.stringify(backendData.data)  // {id, email}
+        );
+      }
+      
+      return backendData;
+    } catch (err: any) {
+      // Log exact backend error for debugging 400s
+      console.error('REGISTER 400 ERROR:', {
+        message: err.response?.data?.message,
+        status: err.response?.status,
+        data: err.response?.data
+      });
+      throw err;
+    }
   },
 
   // Logout

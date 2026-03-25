@@ -131,7 +131,11 @@ const Overview: React.FC = () => {
         const storedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
 
         // email is nested: { state: { user: { email } } }
-        const email = storedUser?.state?.user?.email as string | undefined;
+        const email =
+  storedUser?.email ||
+  storedUser?.user?.email ||
+  storedUser?.state?.user?.email ||
+  undefined;
         
         const profile = await profileService.getMyProfile();
         const overview = await dashboardService.getOverviewStats();

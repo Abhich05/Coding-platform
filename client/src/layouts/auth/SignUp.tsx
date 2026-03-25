@@ -4,8 +4,8 @@ import { authService } from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
 
 interface SignUpPageProps {
-  isModal?: boolean;          
-  onClose?: () => void;       
+  isModal?: boolean;
+  onClose?: () => void;
   onSwitchToSignIn?: () => void;
 }
 
@@ -16,7 +16,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'user', 
+    role: 'user',
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -85,7 +85,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
         <button
           type="button"
           className="absolute left-6 top-6 text-[#02043A] hover:text-[#111827]"
-          onClick={()=> navigate('/dashboard/overview')}
+          onClick={() => navigate('/dashboard/overview')}
         >
           <span className="text-2xl font-light">←</span>
         </button>
@@ -101,12 +101,14 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* 1. Email */}
           <div>
-            <label className="block text-xs font-medium text-[#02043A] mb-1.5">E-mail address</label>
+            <label htmlFor="email" className="block text-xs font-medium text-[#02043A] mb-1.5">E-mail address</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
               <input
-                type="email"
+                id="email"
                 name="email"
+                type="email"
+                autoComplete="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 className={`w-full pl-10 pr-3 py-2.5 text-sm rounded-xl border-2 bg-transparent text-[#02043A] outline-none ${errors.email ? 'border-red-500' : 'border-[#02043A]'}`}
@@ -119,12 +121,15 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
           {/* 2. Password & Confirm */}
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-[#02043A] mb-1.5">Password</label>
+              <label htmlFor="password" className="block text-xs font-medium text-[#02043A] mb-1.5">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+
+                  id="password"
                   name="password"
+                  autoComplete="current-password"
+                  type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={handleInputChange}
                   className={`w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border-2 bg-transparent text-[#02043A] outline-none ${errors.password ? 'border-red-500' : 'border-[#02043A]'}`}
@@ -138,12 +143,14 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#02043A] mb-1.5">Confirm Password</label>
+              <label htmlFor="confirmPassword" className="block text-xs font-medium text-[#02043A] mb-1.5">Confirm Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
                 <input
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  id="confirmPassword"
                   name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   className={`w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border-2 bg-transparent text-[#02043A] outline-none ${errors.confirmPassword ? 'border-red-500' : 'border-[#02043A]'}`}
@@ -156,10 +163,11 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
 
           {/* 3. Role Selection */}
           <div>
-            <label className="block text-xs font-medium text-[#02043A] mb-1.5">Select Role</label>
+            <label htmlFor="role" className="block text-xs font-medium text-[#02043A] mb-1.5">Select Role</label>
             <div className="relative">
               <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
               <select
+                id="role"
                 name="role"
                 value={formData.role}
                 onChange={handleInputChange}

@@ -5,8 +5,8 @@ import { useUserStore } from '../../store/useUserStore';
 import { useNavigate } from 'react-router-dom';
 
 interface SignInPageProps {
-  isOpen: boolean;           
-  onClose: () => void;       
+  isOpen: boolean;
+  onClose: () => void;
   onSignedIn?: (name: string) => void;
 }
 
@@ -25,9 +25,9 @@ const SignInPage: React.FC<SignInPageProps> = ({ isOpen = true, onClose, onSigne
 
   if (!isOpen) return null;
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  console.log("SUBMIT CLICKED", formData);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("SUBMIT CLICKED", formData);
     if (!formData.email || !formData.password) {
       setErrors({ email: 'Credentials are required' });
       return;
@@ -46,7 +46,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       setUser(data.user);
       onSignedIn?.(data.user.fullName || formData.email.split('@')[0]);
       alert('Login Successful!');
-      onClose(); 
+      onClose();
       navigate('/dashboard/overview');
     } catch (error: any) {
       setErrors({ email: 'Login failed' });
@@ -76,12 +76,14 @@ const handleSubmit = async (e: React.FormEvent) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* 1. Email */}
           <div>
-            <label className="block text-xs font-medium text-[#02043A] mb-1.5">E-mail address</label>
+            <label htmlFor="email" className="block text-xs font-medium text-[#02043A] mb-1.5">E-mail address</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
               <input
-                type="email"
+                id="email"
                 name="email"
+                type="email"
+                autoComplete="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 className={`w-full pl-10 pr-3 py-2.5 text-sm rounded-xl border-2 border-[#02043A] bg-transparent text-[#02043A] outline-none ${errors.email ? 'border-red-500' : ''}`}
@@ -93,13 +95,15 @@ const handleSubmit = async (e: React.FormEvent) => {
           {/* 2. Password */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-medium text-[#02043A]">Password</label>
+              <label htmlFor="password" className="block text-xs font-medium text-[#02043A]">Password</label>
             </div>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
               <input
-                type={showPassword ? 'text' : 'password'}
+                id="password"
                 name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 value={formData.password}
                 onChange={handleInputChange}
                 className="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border-2 border-[#02043A] bg-transparent text-black"
@@ -113,10 +117,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           {/* 3. Role */}
           <div>
-            <label className="block text-xs font-medium text-[#02043A] mb-1.5">Login as</label>
+            <label htmlFor="role" className="block text-xs font-medium text-[#02043A] mb-1.5">Login as</label>
             <div className="relative">
               <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
               <select
+                id="role"
                 name="role"
                 value={formData.role}
                 onChange={handleInputChange}
@@ -139,7 +144,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
         <p className="mt-6 text-center text-xs text-[#6B7280]">
           Don't have an account?{' '}
-          <button type="button" className="font-semibold text-[#F97316]" onClick={()=> navigate('/auth/signup')}>
+          <button type="button" className="font-semibold text-[#F97316]" onClick={() => navigate('/auth/signup')}>
             Sign up
           </button>
         </p>

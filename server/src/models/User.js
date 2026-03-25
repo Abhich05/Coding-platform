@@ -1,27 +1,26 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
+
 const userSchema = new mongoose.Schema({ 
-    email:{
-        type: String, unique: true 
-    }, 
-    password:{
-        type:String
-    }, 
-    role:{
-        type: String,
-        default: "User" 
-    }, 
-    createdAt:{
-        type: Date,
-        default: Date.now
-    } 
-});
-userSchema.pre('save', function(next) {
-  if (!this.name && this.email) {
-    this.name = this.email.split('@')[0];
-  }
-  next();
+  email: {
+    type: String, 
+    unique: true,
+    required: true
+  }, 
+  password: {
+    type: String,
+    required: true
+  }, 
+  role: {
+    type: String,
+    default: "User" 
+  }, 
+  createdAt: {
+    type: Date,
+    default: Date.now
+  } 
 });
 
-const userModel=mongoose.model("User",userSchema);
+// NO pre('save') middleware at all!
 
-module.exports=userModel;
+const userModel = mongoose.model("User", userSchema);
+module.exports = userModel;
