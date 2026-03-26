@@ -1,12 +1,27 @@
-// src/pages/Dashboard/Jobs.tsx
-import type { FC } from "react";
+import { useEffect, useState } from "react";
+import JobCard from "../../components/JobCard";
 
-const Jobs: FC = () => {
+const Jobs = () => {
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/jobs")
+      .then(res => res.json())
+      .then(data => {
+        setJobs(data.data);
+      });
+  }, []);
+
   return (
-    <section className="text-gray-100 space-y-3">
-      <h1 className="text-xl font-semibold">Jobs</h1>
-      <p className="text-sm text-gray-300">Job listings placeholder.</p>
-    </section>
+    <div className="p-6">
+      <h1 className="text-xl font-semibold mb-6">
+        Perfect Matches For You
+      </h1>
+
+      {jobs.map((job: any) => (
+        <JobCard key={job._id} job={job} />
+      ))}
+    </div>
   );
 };
 
