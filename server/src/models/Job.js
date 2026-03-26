@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const mongoose = require('mongoose');
 
 const JobSchema = new mongoose.Schema({
@@ -9,6 +10,6 @@ const JobSchema = new mongoose.Schema({
   postedAt: { type: Date, default: Date.now }
 });
 
-const  jobModel=mongoose.model('Job', JobSchema);
+const Job = mongoose.model("Job", JobSchema);
 
-module.exports=jobModel;
+module.exports = { Job };
