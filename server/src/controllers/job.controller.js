@@ -1,9 +1,9 @@
-const jobModel = require('../models/Job');
-const applicationModel = require('../models/Application');
+const { Job } = require('../models/Job');
+const { Application } = require('../models/Application');
 
 async function getJobs(req, res) {
     try {
-        const jobs = await jobModel.find().sort({ postedAt: -1 });
+        const jobs = await Job.find().sort({ postedAt: -1 });
         
         return res.status(200).json({
             success: true,
@@ -20,10 +20,10 @@ async function getJobs(req, res) {
 async function applyJob(req, res) {
     try {
         const { id: jobId } = req.params;
-        const userId = req.user.id;
-        const existingApplication = await applicationModel.findOne({
-            userId: userId,
-            jobId: jobId
+        const userId = req.user.id || req.user._id;
+        const existingApplication = await Application.findOne({
+            applicant: userId,
+            job: jobId
         });
 
         if (existingApplication) {
@@ -32,9 +32,9 @@ async function applyJob(req, res) {
                 message: "You have already applied for this job."
             });
         }
-        await applicationModel.create({
-            userId: userId,
-            jobId: jobId,
+        await Application.create({
+            applicant: userId,
+            job: jobId,
         });
 
         return res.status(201).json({ 
@@ -50,4 +50,28 @@ async function applyJob(req, res) {
     }
 }
 
-module.exports = { getJobs, applyJob };
+async function createJob(req, res) {
+    try {
+        const { title, company, location, description, tags } = req.body;
+
+        const newJob = await Job.create({
+            title,
+            company,
+            location,
+            description,
+            tags,
+        });
+
+        return res.status(201).json({
+            success: true,
+            data: newJob,
+        });
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: "Unable to create job",
+        });
+    }
+}
+
+module.exports = { getJobs, applyJob, createJob };
