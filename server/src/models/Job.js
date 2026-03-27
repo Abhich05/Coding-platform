@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const JobSchema = new mongoose.Schema({
   title: String,
@@ -9,6 +9,12 @@ const JobSchema = new mongoose.Schema({
   postedAt: { type: Date, default: Date.now }
 });
 
+<<<<<<< feature/auth-and-overview
+const  jobModel=mongoose.model('Job', JobSchema);
+
+module.exports=jobModel;
+=======
 const Job = mongoose.model("Job", JobSchema);
 
 module.exports = { Job };
+>>>>>>> main
