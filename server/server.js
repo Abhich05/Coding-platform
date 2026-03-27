@@ -2,10 +2,7 @@ require('dotenv').config();
 const express = require("express"); 
 const app = express(); 
 const cors = require("cors"); 
-// const connectDB = require("./src/db/db.js");
-const dotenv = require("dotenv")
-
-dotenv.config();
+const connectDB = require("./src/db/db.js");
 
 const PORT = process.env.PORT || 5000;
 
@@ -30,7 +27,7 @@ app.use("/api/jobs", require("./src/routes/jobs.routes.js"));
 
 (async () => {
   try {
-    // await connectDB();
+    await connectDB();
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });

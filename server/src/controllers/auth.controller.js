@@ -44,26 +44,10 @@ async function loginUser(req,res){
     }
 }
 
-async function getMe(req,res) {
-    try {
-        const user = await userModel.findById(req.user.id).select("-password");
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.status(200).json({
-            success: true,
-            data: user
-        });
-    } catch (e) {
-        res.status(500).json({
-            message: "Server Error"
-        });
-    }
-}
 
 module.exports = {
     registerUser,
     loginUser,
-    getMe 
+   
 };
