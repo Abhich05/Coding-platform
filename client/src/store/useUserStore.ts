@@ -3,9 +3,9 @@ import { persist } from 'zustand/middleware';
 
 interface User {
   id: string;
-  fullName: string;
+  fullName?: string;
   email: string;
-  role: string;
+  role?: string;
 }
 
 interface UserState {
@@ -13,6 +13,8 @@ interface UserState {
   setUser: (user: User) => void;
   clearUser: () => void;
   isAuthenticated: boolean;
+  isHydrated: boolean;
+  setHydrated: (state: boolean) => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -20,11 +22,20 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      setUser: (user) => set({ user, isAuthenticated: true }),
+      isHydrated: false,
+      setUser: (user: User) => {
+        console.log('Setting user in store:', user);
+        set({ user, isAuthenticated: true });
+      },
       clearUser: () => set({ user: null, isAuthenticated: false }),
+      setHydrated: (state: boolean) => set({ isHydrated: state }),
     }),
     {
       name: 'user-storage', // Key in localStorage
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true);
+        console.log('User store rehydrated');
+      },
     }
   )
 );

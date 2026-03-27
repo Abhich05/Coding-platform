@@ -1,9 +1,9 @@
 const userModel=require('../models/User');
 const jwt=require('jsonwebtoken');
-const bcrypt=require('bcrypt');
+const bcrypt=require('bcryptjs');
 
 exports.register=async(userData)=>{
-    const {name,email,password}=userData;
+    const {email,password,fullName,role}=userData;
     const userDetail=await userModel.findOne({email});
 
     if(userDetail){
@@ -13,13 +13,14 @@ exports.register=async(userData)=>{
     const hashedPass=await bcrypt.hash(password,10);
 
     return await userModel.create({
-        name,
         email,
-        password:hashedPass
+        password:hashedPass,
+        fullName: fullName || email.split('@')[0],
+        role: role || "user"
     })
 }
 exports.login=async(userData)=>{
-   const { email, password } = userData;
+   const { email, password, role } = userData;
     const user = await userModel.findOne({ email });
     if (!user) {
         throw new Error("invalid email or password");
@@ -28,13 +29,17 @@ exports.login=async(userData)=>{
     if (!isMatch) {
         throw new Error("invalid email or password");
     }
+    if (role && user.role !== role) {
+        throw new Error("Unauthorized role");
+    }
     return user;
 }
 
 exports.generateToken=async(user)=>{
     return jwt.sign({
         id:user._id,
-        email:user.email
+        email:user.email,
+        role:user.role
     },process.env.JWT_SECRET,
     {expiresIn: "7d"}
 )

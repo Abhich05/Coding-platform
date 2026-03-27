@@ -4,42 +4,47 @@ import axiosInstance from "./axiosInstance";
 export const authService = {
   // Login User
   login: async (credentials: any) => {
-    const response = await axiosInstance.post("/auth/login", credentials);
-    
-    // Store token if returned
-    if ((response.data as any).token) {
-      localStorage.setItem("auth_token", (response.data as any).token);
-    }
+    try {
+      const response = await axiosInstance.post("/auth/login", credentials);
+      console.log('Login response:', response.data);
+      
+      // Backend returns: {message: "...", data: {id, email}}
+      const userData = response.data?.data;
+      
+      if (!userData) {
+        throw new Error('Invalid response from server');
+      }
+      
+      // Store token if returned
+      if (response.data?.token) {
+        console.log('Storing auth token');
+        localStorage.setItem("auth_token", response.data.token);
+      }
 
-    // Store user data (handles both {data: {...}} and {user: {...}})
-    const userData = response.data?.data || response.data?.user;
-    if (userData) {
-      localStorage.setItem(
-        "user-storage",
-        JSON.stringify(userData)  // {id, email}
-      );
-    }
+      // Don't store user data here - let Zustand persist middleware handle it
+      // The SignIn component will call setUser() which will trigger Zustand to persist
+      console.log('User data extracted, returning to SignIn to update store');
 
-    return response.data;
+      return response.data;
+    } catch (error: any) {
+      console.error('Login error:', error);
+      throw error;
+    }
   },
 
-  // Register User - FIXED: Now saves user data like login
+  // Register User
   register: async (userData: any) => {
     try {
       const response = await axiosInstance.post("/auth/register", userData);
       
-      // Backend returns: {message: "...", data: {id, email}}
-      const backendData = response.data;
-      
-      // Save user data to localStorage (same format as login)
-      if (backendData?.data) {
-        localStorage.setItem(
-          "user-storage", 
-          JSON.stringify(backendData.data)  // {id, email}
-        );
+      // Store token if returned
+      if (response.data?.token) {
+        console.log('Storing auth token');
+        localStorage.setItem("auth_token", response.data.token);
       }
-      
-      return backendData;
+
+      // Backend returns: {message: "...", data: {id, email}}
+      return response.data;
     } catch (err: any) {
       // Log exact backend error for debugging 400s
       console.error('REGISTER 400 ERROR:', {
@@ -53,7 +58,9 @@ export const authService = {
 
   // Logout
   logout: () => {
+    console.log('Logging out user');
     localStorage.removeItem("auth_token");
     localStorage.removeItem("user-storage");
+    useUserStore.getState().clearUser();
   },
 };

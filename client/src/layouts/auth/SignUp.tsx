@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { authService } from '../../services/authService';
+import { useUserStore } from '../../store/useUserStore';
 import { useNavigate } from 'react-router-dom';
 
 interface SignUpPageProps {
@@ -14,6 +15,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     email: '',
+    fullName: '',
     password: '',
     confirmPassword: '',
     role: 'user',
@@ -23,6 +25,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -56,14 +59,41 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
     setErrors({});
 
     try {
-      await authService.register({
+      const response = await authService.register({
         email: formData.email,
+        fullName: formData.fullName || formData.email.split('@')[0],
         password: formData.password,
         role: formData.role,
       });
 
-      alert('Account created! Redirectng to dashbaord...');
-      navigate('/dashboard/overview');
+      console.log('Register response:', response);
+      
+      // Backend returns: { message: "...", data: { id, email } }
+      // Extract the nested data object
+      const userData = response?.data?.data || response?.data?.user || response?.data;
+      
+      console.log('Extracted userData:', userData);
+
+      if (userData && userData.id && userData.email) {
+        const userObj = {
+          id: userData.id,
+          email: userData.email,
+          fullName: userData.fullName || formData.email.split('@')[0],
+          role: userData.role || formData.role
+        };
+        
+        console.log('Setting user:', userObj);
+        setUser(userObj);
+        
+        alert('Account created! Redirecting to dashboard...');
+        
+        setTimeout(() => {
+          console.log('Navigating to dashboard');
+          navigate('/dashboard/overview');
+        }, 100);
+      } else {
+        setErrors({ email: 'Invalid response from server' });
+      }
     } catch (error: any) {
       setErrors({
         email: error?.response?.data?.message || 'Registration failed',
@@ -99,7 +129,24 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 1. Email */}
+          {/* 1. Full Name */}
+          <div>
+            <label htmlFor="fullName" className="block text-xs font-medium text-[#02043A] mb-1.5">Full Name</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
+              <input
+                id="fullName"
+                name="fullName"
+                type="text"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                className={`w-full pl-10 pr-3 py-2.5 text-sm rounded-xl border-2 bg-transparent text-[#02043A] outline-none border-[#02043A]`}
+                placeholder="Full Name (optional)"
+              />
+            </div>
+          </div>
+
+          {/* 2. Email */}
           <div>
             <label htmlFor="email" className="block text-xs font-medium text-[#02043A] mb-1.5">E-mail address</label>
             <div className="relative">
@@ -118,7 +165,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
             {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
           </div>
 
-          {/* 2. Password & Confirm */}
+          {/* 3. Password & Confirm */}
           <div className="space-y-4">
             <div>
               <label htmlFor="password" className="block text-xs font-medium text-[#02043A] mb-1.5">Password</label>
@@ -161,7 +208,7 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
             </div>
           </div>
 
-          {/* 3. Role Selection */}
+          {/* 4. Role Selection */}
           <div>
             <label htmlFor="role" className="block text-xs font-medium text-[#02043A] mb-1.5">Select Role</label>
             <div className="relative">

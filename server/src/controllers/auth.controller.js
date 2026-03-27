@@ -10,9 +10,12 @@ async function registerUser(req,res) {
 
         res.status(201).json({
             message:"User Created Sucessfullly!",
+            token,
             data:{
                 id:newUser._id,
-                email:newUser.email
+                email:newUser.email,
+                fullName:newUser.fullName,
+                role:newUser.role
             }
         })
     }
@@ -31,9 +34,12 @@ async function loginUser(req,res){
 
         res.status(200).json({
             message:"User Logined Sucessfully!",
+            token,
             data:{
                 id:userDetail._id,
-                email:userDetail.email
+                email:userDetail.email,
+                fullName:userDetail.fullName,
+                role:userDetail.role
             }
         })
     }

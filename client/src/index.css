@@ -1,6 +1,5 @@
 /* src/index.css */
 @import "tailwindcss";
-@reference utilities;
 
 /* Global variables */
 :root {

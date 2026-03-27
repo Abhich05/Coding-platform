@@ -41,22 +41,27 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Auth via cookies
+// Auth via Authorization: Bearer <token> OR cookies
 const auth = async (req, res, next) => {
   try {
-    const token = req.cookies?.token;
+    let token = req.cookies?.token;
+
+    // If no cookie, check Authorization header
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+      token = req.headers.authorization.split(" ")[1];
+    }
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Access denied"
+        message: "Access denied: Token missing"
       });
     }
 
     req.user = await getUserFromToken(token);
     next();
   } catch (error) {
-    return res.status(403).json({
+    return res.status(401).json({
       success: false,
       message: error.message === "USER_NOT_FOUND" ? "User not found" : "Invalid or expired token"
     });

@@ -272,21 +272,23 @@ const DashboardLayout: FC = () => {
         </header>
 
         {/* Content area constrained */}
-        <main className="flex-1 p-6 md:p-8 bg-transparent text-gray-100">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 p-6 md:p-8 bg-transparent text-gray-100 flex flex-col">
+          <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
             <div className="text-xs text-gray-400 mb-4"></div>
 
-            <div className="min-h-[60vh]">
+            <div className="flex-1">
               <div className="card-glass transition-shadow duration-200 hover:shadow-2xl">
                 <Outlet />
               </div>
             </div>
-
-            <footer className="mt-8 text-xs text-gray-500 flex items-center justify-start">
-              <div>© {new Date().getFullYear()} Platform · Built with ❤️</div>
-            </footer>
           </div>
         </main>
+
+        <footer className="w-full px-6 py-4 md:px-8 text-xs text-gray-500 flex items-center justify-start border-t border-white/5">
+          <div className="max-w-7xl mx-auto w-full">
+            © {new Date().getFullYear()} Platform · Built with ❤️
+          </div>
+        </footer>
       </div>
     </div>
   );
