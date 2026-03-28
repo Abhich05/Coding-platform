@@ -38,7 +38,13 @@ const ProtectedRoute: FC<{
 }> = ({ children, role }) => {
   const { user, isAuthenticated, isHydrated } = useUserStore();
 
-  if (!isHydrated) return <div>Loading...</div>;
+  if (!isHydrated) {
+    return (
+      <div className="app-shell flex items-center justify-center p-6">
+        <div className="surface-card px-6 py-4 text-sm muted-text">Loading workspace...</div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/auth/signin" replace />;
@@ -57,7 +63,13 @@ const ProtectedRoute: FC<{
 const AppRouter: FC = () => {
   const { user, isAuthenticated, isHydrated } = useUserStore();
 
-  if (!isHydrated) return <div>Loading...</div>;
+  if (!isHydrated) {
+    return (
+      <div className="app-shell flex items-center justify-center p-6">
+        <div className="surface-card px-6 py-4 text-sm muted-text">Loading workspace...</div>
+      </div>
+    );
+  }
 
   return (
     <Routes>
@@ -131,7 +143,14 @@ const AppRouter: FC = () => {
       {/* ⭐ 404 */}
       <Route
         path="*"
-        element={<div style={{ padding: 24 }}>404 - Not Found</div>}
+        element={
+          <div className="app-shell flex items-center justify-center p-6">
+            <div className="surface-card p-6 text-center">
+              <h2 className="text-xl font-semibold">404</h2>
+              <p className="muted-text mt-1">The page you’re looking for does not exist.</p>
+            </div>
+          </div>
+        }
       />
 
     </Routes>

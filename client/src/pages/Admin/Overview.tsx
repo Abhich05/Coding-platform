@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/useUserStore";
+import { adminService } from "../../services/adminService";
 
 const AdminOverview = () => {
   const navigate = useNavigate();
   const clearUser = useUserStore((state) => state.clearUser);
 
   const [users, setUsers] = useState<any[]>([]);
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [stats, setStats] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const token = localStorage.getItem("auth_token");
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogout = () => {
     clearUser();
@@ -22,54 +21,53 @@ const AdminOverview = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersRes = await axios.get(
-          "http://localhost:4000/api/admin/users",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const [usersRes, statsRes] = await Promise.all([
+          adminService.getUsers(),
+          adminService.getStats(),
+        ]);
 
-        setUsers(usersRes.data.data || []);
-
-        try {
-          const jobsRes = await axios.get(
-            "http://localhost:4000/api/jobs",
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-          setJobs(jobsRes.data.data || []);
-        } catch {
-          console.log("Jobs API not available");
-        }
-      } catch (err) {
-        console.error(err);
+        setUsers(usersRes || []);
+        setStats(statsRes || null);
+      } catch (err: any) {
+        setError(err?.response?.data?.message || "Failed to load admin data");
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [token]);
+  }, []);
 
   if (loading)
     return (
-      <div className="text-white p-10 text-xl">
-        Loading dashboard...
+      <div className="flex items-center justify-center p-10">
+        <div className="surface-card px-6 py-4 text-sm muted-text">Loading admin dashboard...</div>
       </div>
     );
 
-  const totalAdmins = users.filter(u => u.role === "admin").length;
-  const totalUsers = users.filter(u => u.role === "user").length;
+  if (error)
+    return (
+      <div className="flex items-center justify-center p-10">
+        <div className="surface-card px-6 py-4 text-sm text-red-500">{error}</div>
+      </div>
+    );
+
+  const totals = stats?.totals || {};
+  const totalAdmins = totals.totalAdmins ?? users.filter((u: any) => u.role === "admin").length;
+  const totalUsers = totals.totalUsers ?? users.filter((u: any) => u.role === "user").length;
 
   return (
-    <div className="p-8 text-white">
+    <div className="p-8">
 
       {/* Header with Logout */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-3xl font-bold text-[var(--text-primary)]">
           Admin Dashboard
         </h1>
 
         <button
           onClick={handleLogout}
-          className="px-5 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg font-semibold transition"
+          className="px-5 py-2 btn-solid text-xs"
         >
           Logout
         </button>
@@ -79,19 +77,19 @@ const AdminOverview = () => {
       <div className="grid md:grid-cols-4 gap-6 mb-10">
         <StatCard title="Total Users" value={totalUsers} />
         <StatCard title="Admins" value={totalAdmins} />
-        <StatCard title="Jobs Posted" value={jobs.length} />
-        <StatCard title="Platform Status" value="Active" />
+        <StatCard title="Jobs Posted" value={totals.jobsCount ?? "-"} />
+        <StatCard title="Tests" value={totals.testsCount ?? "-"} />
       </div>
 
       {/* Recent Users Table */}
-      <div className="bg-[#FDF4EE] text-black rounded-3xl p-6 shadow-lg">
-        <h2 className="text-xl font-bold mb-4">
+      <div className="surface-card">
+        <h2 className="text-xl font-bold mb-4 text-[var(--text-primary)]">
           Recent Users
         </h2>
 
         <table className="w-full">
           <thead>
-            <tr className="border-b text-left">
+            <tr className="border-b border-[var(--border)] text-left text-sm muted-text">
               <th className="py-3">Name</th>
               <th>Email</th>
               <th>Role</th>
@@ -99,17 +97,17 @@ const AdminOverview = () => {
           </thead>
 
           <tbody>
-            {users
-              .filter(u => u.role === "user")
+            {(stats?.recentUsers || users)
+              .filter((u: any) => u.role === "user")
               .slice(0, 6)
-              .map((user, i) => (
-                <tr key={i} className="border-b">
-                  <td className="py-3">
+              .map((user: any, i: number) => (
+                <tr key={i} className="border-b border-[var(--border)] hover:bg-[var(--bg-secondary)] transition">
+                  <td className="py-3 text-[var(--text-primary)]">
                     {user.fullName || "N/A"}
                   </td>
-                  <td>{user.email}</td>
+                  <td className="text-[var(--text-primary)]">{user.email}</td>
                   <td>
-                    <span className="px-3 py-1 rounded-lg bg-green-200 text-green-800 text-sm">
+                    <span className="px-3 py-1 rounded-lg bg-green-200 text-green-800 text-xs">
                       user
                     </span>
                   </td>
@@ -125,26 +123,25 @@ const AdminOverview = () => {
 const StatCard = ({ title, value }: any) => (
   <div
     className="
-      bg-[#FDF4EE] text-black p-6 rounded-2xl shadow-md
-      transition-all duration-300 ease-out
-      hover:scale-105 hover:shadow-2xl
-      hover:-translate-y-1
-      cursor-pointer
-      relative overflow-hidden
-    "
+      surface-card p-6
+       transition-all duration-300 ease-out
+       hover:scale-105 hover:shadow-2xl
+       hover:-translate-y-1
+       cursor-pointer
+       relative overflow-hidden
+     "
   >
     {/* subtle gradient glow */}
-    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition duration-300 bg-gradient-to-r from-orange-200/40 to-transparent"></div>
+    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition duration-300 bg-gradient-to-r from-[var(--accent)]/20 to-transparent"></div>
 
-    <h3 className="text-gray-600 mb-2 relative z-10">
+    <h3 className="muted-text mb-2 relative z-10">
       {title}
     </h3>
 
-    <p className="text-2xl font-bold text-orange-600 relative z-10">
+    <p className="text-2xl font-bold text-[var(--accent-strong)] relative z-10">
       {value}
     </p>
   </div>
 );
-
 
 export default AdminOverview;

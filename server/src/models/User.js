@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({ 
+const userSchema = new mongoose.Schema({
   email: {
-    type: String, 
+    type: String,
     unique: true,
     required: true
-  }, 
+  },
   password: {
     type: String,
     required: true
@@ -16,12 +16,13 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: "User" 
-  }, 
+    enum: ["user", "admin"],
+    default: "user"
+  },
   createdAt: {
     type: Date,
     default: Date.now
-  } 
+  }
 });
 
 // NO pre('save') middleware at all!

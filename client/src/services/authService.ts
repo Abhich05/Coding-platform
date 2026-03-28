@@ -1,5 +1,6 @@
 // src/services/authService.ts
 import axiosInstance from "./axiosInstance";
+import { useUserStore } from "../store/useUserStore";
 
 export const authService = {
   // Login User
@@ -7,14 +8,14 @@ export const authService = {
     try {
       const response = await axiosInstance.post("/auth/login", credentials);
       console.log('Login response:', response.data);
-      
+
       // Backend returns: {message: "...", data: {id, email}}
       const userData = response.data?.data;
-      
+
       if (!userData) {
         throw new Error('Invalid response from server');
       }
-      
+
       // Store token if returned
       if (response.data?.token) {
         console.log('Storing auth token');
@@ -36,7 +37,7 @@ export const authService = {
   register: async (userData: any) => {
     try {
       const response = await axiosInstance.post("/auth/register", userData);
-      
+
       // Store token if returned
       if (response.data?.token) {
         console.log('Storing auth token');

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Brain, Calculator, Clock, CheckCircle, AlertCircle, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
+import { Clock, CheckCircle, AlertCircle, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 
 interface Question {
   id: number;
@@ -25,7 +25,7 @@ const AptitudeQuiz: React.FC<{ category: string | null; onBack: () => void }> = 
         const response = await fetch("/questions.json");
         const data = await response.json();
         setQuestions(data);
-        
+
         if (category) {
           setFilteredQuestions(data.filter((q: Question) => q.category === category));
         } else {
@@ -63,7 +63,7 @@ const AptitudeQuiz: React.FC<{ category: string | null; onBack: () => void }> = 
     setSelectedAnswers({});
     setShowResult(false);
     setTimeLeft(900);
-    
+
     // Reshuffle for diagnostic if retaking
     if (!category) {
       const categories = ["Quantitative Aptitude", "Logical Reasoning", "Verbal Ability", "Data Interpretation"];
@@ -152,13 +152,13 @@ const AptitudeQuiz: React.FC<{ category: string | null; onBack: () => void }> = 
         </div>
 
         <div className="w-full space-y-3">
-          <button 
+          <button
             onClick={handleRetake}
             className="w-full py-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-all flex items-center justify-center gap-2"
           >
             <RefreshCw className="w-5 h-5" /> Retake Quiz
           </button>
-          <button 
+          <button
             onClick={onBack}
             className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold transition-all"
           >
@@ -191,8 +191,8 @@ const AptitudeQuiz: React.FC<{ category: string | null; onBack: () => void }> = 
       </div>
 
       <div className="mb-6 h-2 w-full bg-white/5 rounded-full overflow-hidden">
-        <div 
-          className="h-full bg-orange-500 transition-all duration-300" 
+        <div
+          className="h-full bg-orange-500 transition-all duration-300"
           style={{ width: `${((currentQuestionIdx + 1) / filteredQuestions.length) * 100}%` }}
         />
       </div>
@@ -210,16 +210,14 @@ const AptitudeQuiz: React.FC<{ category: string | null; onBack: () => void }> = 
             <button
               key={idx}
               onClick={() => handleOptionSelect(idx)}
-              className={`w-full p-4 rounded-xl text-left border transition-all flex items-center justify-between group ${
-                selectedAnswers[currentQuestion.id] === idx
+              className={`w-full p-4 rounded-xl text-left border transition-all flex items-center justify-between group ${selectedAnswers[currentQuestion.id] === idx
                   ? "bg-orange-500/20 border-orange-500 text-white"
                   : "bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:border-white/20"
-              }`}
+                }`}
             >
               <span className="flex items-center gap-4">
-                <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
-                   selectedAnswers[currentQuestion.id] === idx ? "bg-orange-500 text-white" : "bg-white/10 text-gray-400 group-hover:bg-white/20"
-                }`}>
+                <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${selectedAnswers[currentQuestion.id] === idx ? "bg-orange-500 text-white" : "bg-white/10 text-gray-400 group-hover:bg-white/20"
+                  }`}>
                   {String.fromCharCode(65 + idx)}
                 </span>
                 {option}
@@ -246,9 +244,8 @@ const AptitudeQuiz: React.FC<{ category: string | null; onBack: () => void }> = 
         <button
           onClick={handlePrev}
           disabled={currentQuestionIdx === 0}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
-            currentQuestionIdx === 0 ? "opacity-30 cursor-not-allowed text-gray-500" : "bg-white/5 hover:bg-white/10 text-white"
-          }`}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${currentQuestionIdx === 0 ? "opacity-30 cursor-not-allowed text-gray-500" : "bg-white/5 hover:bg-white/10 text-white"
+            }`}
         >
           <ChevronLeft className="w-5 h-5" /> Previous
         </button>
@@ -256,8 +253,8 @@ const AptitudeQuiz: React.FC<{ category: string | null; onBack: () => void }> = 
           onClick={handleNext}
           className="flex items-center gap-2 px-8 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-all shadow-lg shadow-orange-500/20"
         >
-          {currentQuestionIdx === filteredQuestions.length - 1 
-            ? (category ? "Finish Practice" : "Submit Quiz") 
+          {currentQuestionIdx === filteredQuestions.length - 1
+            ? (category ? "Finish Practice" : "Submit Quiz")
             : "Next Question"} <ChevronRight className="w-5 h-5" />
         </button>
       </div>
