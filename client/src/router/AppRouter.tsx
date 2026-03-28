@@ -1,113 +1,139 @@
 // src/router/AppRouter.tsx
-import type { FC } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { useUserStore } from '../store/useUserStore';
+import type { FC } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useUserStore } from "../store/useUserStore";
 
-import SignInPage from '../layouts/auth/SignIn';
-import SignUpPage from '../layouts/auth/SignUp';
+/* Auth */
+import SignInPage from "../layouts/auth/SignIn";
+import SignUpPage from "../layouts/auth/SignUp";
 
-import DashboardLayout from '../layouts/DashboardLayout';
-import DashboardHome from '../pages/Dashboard';
-import Overview from '../pages/Dashboard/Overview';
-import Profile from '../pages/Dashboard/Profile';
-import Practise from '../pages/Dashboard/Practise';
-import Aptitude from '../pages/Dashboard/Aptitude';
-import DSA from '../pages/Dashboard/DSA';
-import PracticeTest from '../pages/Dashboard/PracticeTest';
-import Jobs from '../pages/Dashboard/Jobs';
+/* User Dashboard */
+import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardHome from "../pages/Dashboard";
+import Overview from "../pages/Dashboard/Overview";
+import Profile from "../pages/Dashboard/Profile";
+import Practise from "../pages/Dashboard/Practise";
+import Aptitude from "../pages/Dashboard/Aptitude";
+import DSA from "../pages/Dashboard/DSA";
+import PracticeTest from "../pages/Dashboard/PracticeTest";
+import Jobs from "../pages/Dashboard/Jobs";
 
-// Protected Route Component
-const ProtectedRoute: FC<{ children: React.ReactNode }> = ({ children }) => {
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
-  const isHydrated = useUserStore((state) => state.isHydrated);
-  
-  // Show loading while store is hydrating
-  if (!isHydrated) {
-    return <div>Verifying access...</div>;
-  }
-  
+/* Admin */
+import AdminDashboardLayout from "../layouts/AdminDashboardLayout";
+import AdminOverview from "../pages/Admin/Overview";
+import AdminUsers from "../pages/Admin/Users";
+import AdminJobs from "../pages/Admin/Jobs";
+import CreateTest from "../pages/Admin/CreateTest";
+
+/* Test Pages */
+import TestPage from "../pages/Test/TestPage";
+import TestResult from "../pages/Test/TestResult";
+import TestResults from "../pages/Admin/Results";
+
+
+// ⭐ Protected Route Wrapper
+const ProtectedRoute: FC<{
+  children: React.ReactNode;
+  role?: string;
+}> = ({ children, role }) => {
+  const { user, isAuthenticated, isHydrated } = useUserStore();
+
+  if (!isHydrated) return <div>Loading...</div>;
+
   if (!isAuthenticated) {
-    console.log('Not authenticated, redirecting to signin');
     return <Navigate to="/auth/signin" replace />;
   }
-  
+
+  if (role && user?.role !== role) {
+    return user?.role === "admin"
+      ? <Navigate to="/admin/overview" replace />
+      : <Navigate to="/dashboard/overview" replace />;
+  }
+
   return <>{children}</>;
 };
 
+
 const AppRouter: FC = () => {
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
-  const isHydrated = useUserStore((state) => state.isHydrated);
-  const setUser = useUserStore((state) => state.setUser);
+  const { user, isAuthenticated, isHydrated } = useUserStore();
 
-  // Still helpful to have an initialization effect if we need to sync manually
-  // but with Zustand persist and isHydrated, it's less critical.
-  useEffect(() => {
-    if (isHydrated && !isAuthenticated) {
-      const storedData = localStorage.getItem('user-storage');
-      if (storedData) {
-        try {
-          const parsed = JSON.parse(storedData);
-          const userData = parsed.state?.user || parsed.user;
-          if (userData && userData.id && userData.email) {
-            console.log('Syncing user from localStorage on mount:', userData);
-            setUser(userData);
-          }
-        } catch (e) {
-          console.error('Error syncing auth state:', e);
-        }
-      }
-    }
-  }, [isHydrated, isAuthenticated, setUser]);
-
-  if (!isHydrated) {
-    return <div>Loading...</div>;
-  }
-
-  console.log('AppRouter render - isAuthenticated:', isAuthenticated);
+  if (!isHydrated) return <div>Loading...</div>;
 
   return (
     <Routes>
-      {/* Landing redirect – choose where to start */}
-      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard/overview" replace /> : <Navigate to="/auth/signin" replace />} />
 
-      {/* Auth pages – full screen, no DashboardLayout */}
+      {/* ⭐ SMART LANDING */}
       <Route
-        path="/auth/signin"
-        element={<SignInPage isOpen={true} onClose={() => {}} />}
-      />
-      <Route
-        path="/auth/signup"
-        element={<SignUpPage />}
-      />
-
-      {/* Dashboard routes – with sidebar layout */}
-      <Route 
-        path="/dashboard" 
+        path="/"
         element={
-          <ProtectedRoute>
+          !isAuthenticated
+            ? <Navigate to="/auth/signin" replace />
+            : user?.role === "admin"
+              ? <Navigate to="/admin/overview" replace />
+              : <Navigate to="/dashboard/overview" replace />
+        }
+      />
+
+      {/* ⭐ AUTH */}
+      <Route path="/auth/signin" element={<SignInPage />} />
+      <Route path="/auth/signup" element={<SignUpPage />} />
+
+
+      {/* ⭐ USER DASHBOARD */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute role="user">
             <DashboardLayout />
           </ProtectedRoute>
         }
       >
-        {/* index route will render DashboardHome which redirects to /dashboard/overview if you coded that */}
         <Route index element={<DashboardHome />} />
         <Route path="overview" element={<Overview />} />
         <Route path="profile" element={<Profile />} />
+
         <Route path="practise">
           <Route index element={<Practise />} />
           <Route path="aptitude" element={<Aptitude />} />
           <Route path="dsa" element={<DSA />} />
           <Route path="test" element={<PracticeTest />} />
         </Route>
+
         <Route path="jobs" element={<Jobs />} />
       </Route>
 
-      {/* Fallback */}
+
+      {/* ⭐ ADMIN DASHBOARD */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute role="admin">
+            <AdminDashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<AdminOverview />} />
+        <Route path="overview" element={<AdminOverview />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="jobs" element={<AdminJobs />} />
+        <Route path="create-test" element={<CreateTest />} />
+
+        {/* ⭐ NEW ADMIN ANALYTICS */}
+        <Route path="test-results" element={<TestResults />} />
+      </Route>
+
+
+      {/* ⭐ STUDENT TEST FLOW */}
+      <Route path="/test/:code" element={<TestPage />} />
+      <Route path="/test-result" element={<TestResult />} />
+
+
+      {/* ⭐ 404 */}
       <Route
         path="*"
         element={<div style={{ padding: 24 }}>404 - Not Found</div>}
       />
+
     </Routes>
   );
 };

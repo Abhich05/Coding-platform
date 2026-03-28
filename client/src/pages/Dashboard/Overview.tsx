@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { dashboardService } from "../../services/dashboardService";
 import { profileService } from "../../services/profileService";
+import { useNavigate } from "react-router-dom"; // ⭐ NEW IMPORT
 
 // Helper: email -> nice name
 const getNameFromEmail = (email?: string): string => {
@@ -119,30 +120,38 @@ const Overview: React.FC = () => {
   const [dashboardData, setDashboardData] =
     useState<DashboardData>(initialDashboardData);
   const [isLoading, setIsLoading] = useState(true);
+
+  // ⭐ NEW STATE FOR TEST ENTRY
+  const [testCode, setTestCode] = useState("");
+  const navigate = useNavigate();
+
+  const handleStartTest = () => {
+    if (!testCode.trim()) {
+      alert("Please enter test code");
+      return;
+    }
+    navigate(`/test/${testCode}`);
+  };
+
   const { user, metrics, todaysTask, performance, skills, analysis } =
     dashboardData;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Read user from localStorage (Zustand-like shape)
         const storedUserRaw = localStorage.getItem("user-storage");
-
         const storedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
 
-        // email is nested: { state: { user: { email } } }
         const email =
-  storedUser?.email ||
-  storedUser?.user?.email ||
-  storedUser?.state?.user?.email ||
-  undefined;
-        
+          storedUser?.email ||
+          storedUser?.user?.email ||
+          storedUser?.state?.user?.email ||
+          undefined;
+
         const profile = await profileService.getMyProfile();
         const overview = await dashboardService.getOverviewStats();
 
-        // Name from email only
         const name = getNameFromEmail(email);
-
         const role: string = profile?.bio || "";
 
         const initials: string = name
@@ -220,6 +229,8 @@ const Overview: React.FC = () => {
   return (
     <div className="min-h-screen p-4 md:p-8 font-sans bg-[#F2EEE9]">
       <div className="max-w-6xl mx-auto space-y-6">
+
+        {/* HEADER */}
         <header className="bg-[#010440] text-white rounded-3xl p-8 border-6 border-[#F25116] shadow-lg relative overflow-hidden">
           <div className="relative z-10">
             <h1 className="text-3xl font-bold mb-2">
@@ -230,6 +241,53 @@ const Overview: React.FC = () => {
             </p>
           </div>
         </header>
+
+        {/* ⭐⭐⭐ NEW TEST ENTRY SECTION (ADDED ONLY) */}
+       <section className="bg-[#F2EEE9] rounded-3xl p-6 border-4 border-[#F25116] shadow-md">
+  <h2 className="text-xl font-bold text-[#020F59] mb-4">
+    Placement Test Access
+  </h2>
+
+  <div className="flex flex-col md:flex-row gap-4">
+
+    {/* Input */}
+    <input
+      value={testCode}
+      onChange={(e) => setTestCode(e.target.value)}
+      placeholder="Enter Test Code"
+      className="
+        flex-1 px-5 py-3 rounded-xl
+        bg-white text-[#020F59]
+        border border-[#020F59]/20
+        placeholder:text-[#020F59]/40
+        focus:outline-none
+        focus:ring-2 focus:ring-[#F25116]
+        transition
+      "
+    />
+
+    {/* Button */}
+    <button
+      onClick={handleStartTest}
+      className="
+        bg-[#F25116] text-white
+        px-7 py-3 rounded-xl font-semibold
+        hover:bg-[#d8430e]
+        active:scale-95
+        shadow-md transition
+      "
+    >
+      Start Test
+    </button>
+
+  </div>
+</section>
+
+
+        {/* REST OF YOUR ORIGINAL CODE CONTINUES EXACTLY SAME BELOW */}
+
+
+
 
         {/* Stats Section */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4">

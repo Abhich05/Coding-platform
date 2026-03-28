@@ -49,57 +49,38 @@ const SignUpPage: React.FC<SignUpPageProps> = ({
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+  e.preventDefault();
 
-    setErrors({});
+  const validationErrors = validateForm();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
 
-    try {
-      const response = await authService.register({
-        email: formData.email,
-        fullName: formData.fullName || formData.email.split('@')[0],
-        password: formData.password,
-        role: formData.role,
-      });
+  setErrors({});
 
-      console.log('Register response:', response);
-      
-      // Backend returns: { message: "...", data: { id, email } }
-      // Extract the nested data object
-      const userData = response?.data?.data || response?.data?.user || response?.data;
-      
-      console.log('Extracted userData:', userData);
+  try {
+    const response = await authService.register({
+      email: formData.email,
+      fullName: formData.fullName || formData.email.split('@')[0],
+      password: formData.password,
+      role: formData.role,
+    });
 
-      if (userData && userData.id && userData.email) {
-        const userObj = {
-          id: userData.id,
-          email: userData.email,
-          fullName: userData.fullName || formData.email.split('@')[0],
-          role: userData.role || formData.role
-        };
-        
-        console.log('Setting user:', userObj);
-        setUser(userObj);
-        
-        alert('Account created! Redirecting to dashboard...');
-        
-        setTimeout(() => {
-          console.log('Navigating to dashboard');
-          navigate('/dashboard/overview');
-        }, 100);
-      } else {
-        setErrors({ email: 'Invalid response from server' });
-      }
-    } catch (error: any) {
-      setErrors({
-        email: error?.response?.data?.message || 'Registration failed',
-      });
-    }
-  };
+    console.log('Register response:', response);
+
+    alert('Account created successfully! Please sign in.');
+
+    // 👇 IMPORTANT FIX
+    navigate('/auth/signin');
+
+  } catch (error: any) {
+    setErrors({
+      email: error?.response?.data?.message || 'Registration failed',
+    });
+  }
+};
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

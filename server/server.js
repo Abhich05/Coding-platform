@@ -20,5 +20,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/jobs",authJobs); 
 app.use("/api/profile", require("./src/routes/profile.routes"));
 app.use("/api/overview", require("./src/routes/overview.routes"));
+app.use("/api/admin", require("./src/routes/admin.routes"));
+
 //server starting
 app.listen(4000, () => console.log("Server running on http://localhost:4000"));

@@ -16,7 +16,7 @@ exports.register=async(userData)=>{
         email,
         password:hashedPass,
         fullName: fullName || email.split('@')[0],
-        role: role || "user"
+        role: role || "user",
     })
 }
 exports.login=async(userData)=>{
