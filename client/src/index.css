@@ -1,121 +1,174 @@
 @import "tailwindcss";
 
+/* ================= DARK MODE (DEFAULT) ================= */
 :root {
   color-scheme: dark;
-  --bg-primary: #101215;
-  --bg-secondary: #1b1f24;
-  --panel: #232a31;
-  --panel-soft: rgba(35, 42, 49, 0.78);
-  --text-primary: #eef0f3;
-  --text-secondary: #bdc4cd;
-  --border: rgba(255, 255, 255, 0.11);
-  --accent: #9aa4af;
-  --accent-strong: #c8d0d8;
-  --success-bg: #1d3229;
-  --success-text: #ccf2dc;
-  --error-bg: #3a2327;
-  --error-text: #ffd7dc;
-  --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+
+  /* Backgrounds */
+  --bg-primary: #061733;
+  --bg-secondary: #0e2a5a;
+
+  /* Panels */
+  --panel: #142f66;
+  --panel-soft: rgba(20, 47, 102, 0.88);
+
+  /* Text */
+  --text-primary: #f4f7ff;
+  --text-secondary: #a7bbdf;
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.12);
+
+  /* Brand Colors */
+  --accent: #2f6df6;        /* blue */
+  --accent-strong: #ff6a00; /* orange */
+
+  /* Status */
+  --success-bg: #1d3d2f;
+  --success-text: #c8f3da;
+  --error-bg: #47252b;
+  --error-text: #ffd9de;
+
+  /* Depth */
+  --shadow: 0 18px 48px rgba(0,0,0,.45);
 }
 
+
+/* ================= LIGHT MODE ================= */
 html.theme-light {
   color-scheme: light;
-  --bg-primary: #f7f5f2;
-  --bg-secondary: #ece8e3;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #edf3ff;
+
   --panel: #ffffff;
-  --panel-soft: rgba(255, 255, 255, 0.86);
-  --text-primary: #1e242a;
-  --text-secondary: #4d5967;
-  --border: rgba(21, 27, 34, 0.12);
-  --accent: #6e7d8d;
-  --accent-strong: #3a4652;
-  --success-bg: #e9f7ef;
-  --success-text: #175c35;
+  --panel-soft: rgba(255,255,255,.94);
+
+  --text-primary: #0b1f45;
+  --text-secondary: #5a6f92;
+
+  --border: rgba(11,31,69,.12);
+
+  --accent: #2f6df6;
+  --accent-strong: #ff6a00;
+
+  --success-bg: #e8f8ef;
+  --success-text: #1b6c3c;
   --error-bg: #fdecef;
-  --error-text: #8b1f34;
-  --shadow: 0 12px 34px rgba(48, 47, 45, 0.13);
+  --error-text: #8f2037;
+
+  --shadow: 0 12px 34px rgba(0,0,0,.08);
 }
 
-html,
-body,
-#root {
+
+/* ================= GLOBAL BODY ================= */
+
+html, body, #root {
   min-height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: Inter, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial;
+
   color: var(--text-primary);
+
+  /* Premium blue/orange gradient */
   background:
-    radial-gradient(circle at 14% 12%, rgba(255, 255, 255, 0.06), transparent 38%),
-    radial-gradient(circle at 88% 18%, rgba(255, 255, 255, 0.06), transparent 32%),
-    linear-gradient(155deg, var(--bg-primary), var(--bg-secondary));
+    radial-gradient(circle at 12% 10%, rgba(255,106,0,.12), transparent 42%),
+    radial-gradient(circle at 85% 18%, rgba(47,109,246,.12), transparent 36%),
+    linear-gradient(160deg, var(--bg-primary), var(--bg-secondary));
 }
 
+
+/* Smooth UI transitions */
 * {
   box-sizing: border-box;
-  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
+
+/* Focus states */
 a:focus,
 button:focus,
 input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-strong) 35%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
+
+/* ================= COMPONENTS ================= */
+
 @layer components {
+
+  /* App wrapper */
   .app-shell {
     @apply min-h-screen;
     color: var(--text-primary);
     background: transparent;
   }
 
+
+  /* Panels */
   .surface-panel {
     background: var(--panel-soft);
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
-    backdrop-filter: blur(8px);
-    border-radius: 1rem;
+    backdrop-filter: blur(12px);
+    border-radius: 1.1rem;
   }
 
+
+  /* Standard cards */
   .surface-card {
     background: var(--panel);
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
-    border-radius: 1rem;
-    padding: 1.5rem;
+    border-radius: 1.1rem;
+    padding: 1.6rem;
   }
 
+
+  /* Slight dark mix */
   .surface-card-dark {
-    background: color-mix(in srgb, var(--panel) 70%, var(--bg-primary));
+    background: color-mix(in srgb, var(--panel) 75%, var(--bg-primary));
     border: 1px solid var(--border);
-    border-radius: 1rem;
+    border-radius: 1.1rem;
     box-shadow: var(--shadow);
-    padding: 1.5rem;
+    padding: 1.6rem;
   }
 
+
+  /* Glass effect */
   .card-glass {
     background: var(--panel-soft);
     border: 1px solid var(--border);
-    border-radius: 1rem;
-    padding: 1.2rem;
-    backdrop-filter: blur(8px);
+    border-radius: 1.1rem;
+    padding: 1.4rem;
+    backdrop-filter: blur(12px);
     box-shadow: var(--shadow);
     color: var(--text-primary);
   }
 
+
+  /* Secondary text */
   .muted-text {
     color: var(--text-secondary);
   }
 
+
+  /* Inputs */
   .input-field {
     @apply w-full px-4 py-2.5 rounded-xl text-sm;
-    background: color-mix(in srgb, var(--panel) 86%, transparent);
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
     border: 1px solid var(--border);
     color: var(--text-primary);
   }
@@ -124,24 +177,40 @@ textarea:focus {
     color: var(--text-secondary);
   }
 
+
+  /* PRIMARY ORANGE BUTTON */
   .btn-solid {
     @apply px-4 py-2.5 rounded-xl font-semibold;
-    background: var(--accent-strong);
-    color: var(--bg-primary);
-    border: 1px solid transparent;
+
+    background: linear-gradient(135deg,#ff6a00,#ff8a2a);
+    color: white;
+    border: none;
+
+    box-shadow: 0 8px 22px rgba(255,106,0,.35);
   }
 
   .btn-solid:hover {
-    filter: brightness(1.07);
+    transform: translateY(-2px);
+    filter: brightness(1.06);
   }
 
+
+  /* SECONDARY BLUE BUTTON */
   .btn-ghost {
     @apply px-4 py-2.5 rounded-xl font-medium;
+
     background: transparent;
-    color: var(--text-primary);
-    border: 1px solid var(--border);
+    color: var(--accent);
+    border: 1px solid var(--accent);
   }
 
+  .btn-ghost:hover {
+    background: var(--accent);
+    color: white;
+  }
+
+
+  /* Status alerts */
   .status-card {
     @apply rounded-xl px-4 py-3 text-sm;
     border: 1px solid transparent;
