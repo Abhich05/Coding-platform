@@ -1,10 +1,10 @@
 const { Job } = require('../models/Job');
-const { Application } = require('../models/Application');
+const Application = require('../models/Application');
 
 async function getJobs(req, res) {
     try {
         const jobs = await Job.find().sort({ postedAt: -1 });
-        
+
         return res.status(200).json({
             success: true,
             count: jobs.length,
@@ -22,8 +22,8 @@ async function applyJob(req, res) {
         const { id: jobId } = req.params;
         const userId = req.user.id || req.user._id;
         const existingApplication = await Application.findOne({
-            applicant: userId,
-            job: jobId
+            userId,
+            jobId
         });
 
         if (existingApplication) {
@@ -33,15 +33,15 @@ async function applyJob(req, res) {
             });
         }
         await Application.create({
-            applicant: userId,
-            job: jobId,
+            userId,
+            jobId,
         });
 
-        return res.status(201).json({ 
-            success: true, 
-            message: "Applied successfully" 
+        return res.status(201).json({
+            success: true,
+            message: "Applied successfully"
         });
-        
+
     } catch (e) {
         return res.status(500).json({
             success: false,

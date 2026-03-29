@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, Plus, Trash2 } from 'lucide-react';
+import { X, Save, Plus } from 'lucide-react';
 
 interface AddQuestionFormProps {
   onClose: () => void;
@@ -47,7 +47,7 @@ const AddQuestionForm: React.FC<AddQuestionFormProps> = ({ onClose }) => {
           <Plus className="w-6 h-6 text-orange-500" />
           Add New Question
         </h2>
-        <button 
+        <button
           onClick={onClose}
           className="p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
         >
@@ -88,11 +88,10 @@ const AddQuestionForm: React.FC<AddQuestionFormProps> = ({ onClose }) => {
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, correctAnswer: idx })}
-                className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all shrink-0 ${
-                  formData.correctAnswer === idx
+                className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold transition-all shrink-0 ${formData.correctAnswer === idx
                     ? 'bg-orange-500 text-white'
                     : 'bg-white/5 text-gray-500 hover:text-white border border-white/10'
-                }`}
+                  }`}
                 title="Mark as correct answer"
               >
                 {String.fromCharCode(65 + idx)}

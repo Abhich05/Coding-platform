@@ -1,14 +1,12 @@
-const express= require('express');
-// import auth from "../middlewares/auth.middleware.js";
-const { applyJob, getJobs, createJob } = require("../controllers/job.controller.js");
-const { protect } = require('../middlewares/auth.middleware.js');
-
-
+const express = require("express");
 const router = express.Router();
 
-router.post("/", createJob)
+const { getJobs, applyJob, createJob } = require("../controllers/job.controller");
+const { auth } = require("../middlewares/auth.middleware");
+
+// Routes
 router.get("/", getJobs);
-router.post("/:id/apply", protect, applyJob);
+router.post("/", auth, createJob);
+router.post("/:id/apply", auth, applyJob);
 
 module.exports = router;
-
