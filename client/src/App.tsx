@@ -1,19 +1,43 @@
-// src/App.tsx
-import { useEffect, type FC } from "react";
-import AppRouter from "./router/AppRouter";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import Problems from "./pages/Problems";
+import Assessment from "./pages/Assessment";
+import CandidateJoin from "./pages/CandidateJoin";
+import NotFound from "./pages/NotFound";
 
-const App: FC = () => {
-    // Apply saved or preferred theme class on first paint
-    useEffect(() => {
-        const saved = localStorage.getItem("theme-mode");
-        const preferred =
-            window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
-                ? "light"
-                : "dark";
-        document.documentElement.classList.toggle("theme-light", (saved ?? preferred) === "light");
-    }, []);
+const queryClient = new QueryClient();
 
-    return <AppRouter />;
-};
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/problems" element={<Problems />} />
+            <Route path="/assessment" element={<Assessment />} />
+            <Route path="/join" element={<CandidateJoin />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
+  </QueryClientProvider>
+);
 
 export default App;

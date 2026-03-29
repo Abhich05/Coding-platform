@@ -1,67 +1,67 @@
-// src/services/authService.ts
-import axiosInstance from "./axiosInstance";
-import { useUserStore } from "../store/useUserStore";
+import apiClient from '../lib/apiClient';
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  role?: 'recruiter' | 'admin';
+  company?: string;
+}
 
 export const authService = {
-  // Login User
-  login: async (credentials: any) => {
-    try {
-      const response = await axiosInstance.post("/auth/login", credentials);
-      console.log('Login response:', response.data);
-
-      // Backend returns: {message: "...", data: {id, email}}
-      const userData = response.data?.data;
-
-      if (!userData) {
-        throw new Error('Invalid response from server');
-      }
-
-      // Store token if returned
-      if (response.data?.token) {
-        console.log('Storing auth token');
-        localStorage.setItem("auth_token", response.data.token);
-      }
-
-      // Don't store user data here - let Zustand persist middleware handle it
-      // The SignIn component will call setUser() which will trigger Zustand to persist
-      console.log('User data extracted, returning to SignIn to update store');
-
-      return response.data;
-    } catch (error: any) {
-      console.error('Login error:', error);
-      throw error;
+  async register(data: RegisterData) {
+    const response = await apiClient.post('/auth/register', data);
+    if (response.data.success && response.data.data.token) {
+      localStorage.setItem('token', response.data.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.data.user));
     }
+    return response.data;
   },
 
-  // Register User
-  register: async (userData: any) => {
-    try {
-      const response = await axiosInstance.post("/auth/register", userData);
-
-      // Store token if returned
-      if (response.data?.token) {
-        console.log('Storing auth token');
-        localStorage.setItem("auth_token", response.data.token);
-      }
-
-      // Backend returns: {message: "...", data: {id, email}}
-      return response.data;
-    } catch (err: any) {
-      // Log exact backend error for debugging 400s
-      console.error('REGISTER 400 ERROR:', {
-        message: err.response?.data?.message,
-        status: err.response?.status,
-        data: err.response?.data
-      });
-      throw err;
+  async login(data: LoginData) {
+    const response = await apiClient.post('/auth/login', data);
+    if (response.data.success && response.data.data.token) {
+      localStorage.setItem('token', response.data.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.data.user));
     }
+    return response.data;
   },
 
-  // Logout
-  logout: () => {
-    console.log('Logging out user');
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("user-storage");
-    useUserStore.getState().clearUser();
+  async logout() {
+    const response = await apiClient.post('/auth/logout');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    return response.data;
+  },
+
+  async getMe() {
+    const response = await apiClient.get('/auth/me');
+    return response.data;
+  },
+
+  async updateProfile(data: { name?: string; company?: string }) {
+    const response = await apiClient.put('/auth/profile', data);
+    if (response.data.success) {
+      localStorage.setItem('user', JSON.stringify(response.data.data));
+    }
+    return response.data;
+  },
+
+  getCurrentUser() {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  },
+
+  getToken() {
+    return localStorage.getItem('token');
+  },
+
+  isAuthenticated() {
+    return !!localStorage.getItem('token');
   },
 };
