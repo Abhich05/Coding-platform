@@ -1,4 +1,4 @@
-const mongoose=require('mongoose');
+import mongoose from 'mongoose';
 const applicationSchema=new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -21,5 +21,5 @@ const applicationSchema=new mongoose.Schema({
     }
 })
 
-const applicationModel=mongoose.model('Application',applicationSchema);
-module.exports=applicationModel;
+const Application=mongoose.model('Application',applicationSchema);
+export default Application;

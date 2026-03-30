@@ -1,8 +1,9 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import express from "express";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import { getTestByCode, submitTest } from "../controllers/test.controller.js";
+
 const router = express.Router();
-const { getTestByCode, submitTest } = require("../controllers/test.controller");
 
 // Fetch a test by code (no auth required for read)
 router.get("/:code", getTestByCode);
@@ -27,4 +28,4 @@ async function authOptional(req, _res, next) {
     return next();
 }
 
-module.exports = router;
+export default router;

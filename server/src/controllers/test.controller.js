@@ -1,5 +1,6 @@
-const Test = require("../models/Test");
-const TestAttempt = require("../models/TestAttempt");
+import Test from "../models/Test.js";
+import TestAttempt from "../models/TestAttempt.js";
+import { sendMail } from "../utils/mailer.js";
 
 const generateTestCode = async () => {
   for (let i = 0; i < 5; i += 1) {
@@ -10,7 +11,7 @@ const generateTestCode = async () => {
   throw new Error("Unable to generate unique test code");
 };
 
-exports.createTest = async (req, res) => {
+export const createTest = async (req, res) => {
   try {
     const { title, durationMinutes, questions, code } = req.body;
 
@@ -59,7 +60,7 @@ exports.createTest = async (req, res) => {
   }
 };
 
-exports.listTests = async (_req, res) => {
+export const listTests = async (_req, res) => {
   try {
     const tests = await Test.find().sort({ createdAt: -1 });
     return res.json({ success: true, data: tests });
@@ -68,7 +69,7 @@ exports.listTests = async (_req, res) => {
   }
 };
 
-exports.getTestByCode = async (req, res) => {
+export const getTestByCode = async (req, res) => {
   try {
     const test = await Test.findOne({
       code: req.params.code.toUpperCase(),
@@ -100,7 +101,7 @@ exports.getTestByCode = async (req, res) => {
   }
 };
 
-exports.submitTest = async (req, res) => {
+export const submitTest = async (req, res) => {
   try {
     const {
       answers = [],
@@ -145,7 +146,7 @@ exports.submitTest = async (req, res) => {
   }
 };
 
-exports.getTestResults = async (req, res) => {
+export const getTestResults = async (req, res) => {
   try {
     const testId = req.params.testId;
 
@@ -169,7 +170,7 @@ exports.getTestResults = async (req, res) => {
   }
 };
 
-exports.sendTestLink = async (req, res) => {
+export const sendTestLink = async (req, res) => {
   try {
     const { testId } = req.params;
     const { email } = req.body;
@@ -191,8 +192,6 @@ exports.sendTestLink = async (req, res) => {
     const shareUrl = `${
       process.env.APP_URL || "http://localhost:5173"
     }/test/${test.code}`;
-
-    const { sendMail } = require("../utils/mailer");
 
     await sendMail({
       to: email,

@@ -1,0 +1,116 @@
+{
+  "test_title": "Basic Aptitude Test",
+  "total_questions": 10,
+  "questions": [
+    {
+      "id": 1,
+      "question": "If a train travels 60 km in 1.5 hours, what is its average speed?",
+      "options": {
+        "A": "30 km/h",
+        "B": "40 km/h",
+        "C": "45 km/h",
+        "D": "50 km/h"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": 2,
+      "question": "What is the simple interest on ₹5000 at 10% per annum for 2 years?",
+      "options": {
+        "A": "₹500",
+        "B": "₹750",
+        "C": "₹1000",
+        "D": "₹1200"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": 3,
+      "question": "If the ratio of boys to girls in a class is 3:2 and there are 30 students in total, how many girls are there?",
+      "options": {
+        "A": "10",
+        "B": "12",
+        "C": "15",
+        "D": "18"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": 4,
+      "question": "A number when divided by 5 gives a remainder of 3. What is the remainder when the same number is divided by 10?",
+      "options": {
+        "A": "3",
+        "B": "5",
+        "C": "8",
+        "D": "Either 3 or 8"
+      },
+      "correct_answer": "D"
+    },
+    {
+      "id": 5,
+      "question": "What is 25% of 240?",
+      "options": {
+        "A": "40",
+        "B": "50",
+        "C": "60",
+        "D": "70"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": 6,
+      "question": "The average of five numbers is 20. If one number is excluded, the average becomes 18. What is the excluded number?",
+      "options": {
+        "A": "20",
+        "B": "25",
+        "C": "28",
+        "D": "30"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": 7,
+      "question": "If the cost price of an item is ₹400 and it is sold for ₹500, what is the profit percentage?",
+      "options": {
+        "A": "20%",
+        "B": "22%",
+        "C": "25%",
+        "D": "30%"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": 8,
+      "question": "What is the next number in the series: 2, 6, 12, 20, ?",
+      "options": {
+        "A": "28",
+        "B": "30",
+        "C": "32",
+        "D": "36"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "id": 9,
+      "question": "If 3x + 5 = 20, what is the value of x?",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6"
+      },
+      "correct_answer": "C"
+    },
+    {
+      "id": 10,
+      "question": "A shopkeeper marks an item at ₹1000 and gives a discount of 10%. What is the selling price?",
+      "options": {
+        "A": "₹850",
+        "B": "₹900",
+        "C": "₹920",
+        "D": "₹950"
+      },
+      "correct_answer": "B"
+    }
+  ]
+}

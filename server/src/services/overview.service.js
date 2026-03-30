@@ -1,8 +1,8 @@
-const User = require("../models/User");
-const Problem = require("../models/Problem");
-const Submission = require("../models/Submission");
+import User from "../models/User.js";
+import Problem from "../models/Problem.js";
+import Submission from "../models/Submission.js";
 
-exports.getStats = async (userId) => {
+export const getStats = async (userId) => {
   const [totalUsers, totalProblems, mySolved, recentActivity] =
     await Promise.all([
       User.countDocuments(),

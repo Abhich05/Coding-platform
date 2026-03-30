@@ -13,7 +13,7 @@ const SignInPage: React.FC = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
-        role: "user",
+        role: "candidate",
     });
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -52,8 +52,8 @@ const SignInPage: React.FC = () => {
             const userObj = {
                 id: userData.id,
                 email: userData.email,
-                fullName: userData.fullName || formData.email.split("@")[0],
-                role: userData.role || "user",
+                fullName: userData.name || userData.fullName || formData.email.split("@")[0],
+                role: userData.role || "candidate",
             };
 
             setUser(userObj);
@@ -61,6 +61,8 @@ const SignInPage: React.FC = () => {
 
             if (userObj.role === "admin") {
                 navigate("/admin/overview", { replace: true });
+            } else if (userObj.role === "recruiter") {
+                navigate("/recruiter/dashboard", { replace: true });
             } else {
                 navigate("/dashboard/overview", { replace: true });
             }
@@ -146,8 +148,8 @@ const SignInPage: React.FC = () => {
                     <div>
                         <label className="block text-xs font-semibold mb-1.5 muted-text">Login as</label>
                         <div className="flex flex-col gap-2">
-                            {["user", "admin"].map((role) => {
-                                const isUser = role === "user";
+                            {["candidate", "recruiter", "admin"].map((role) => {
+                                const isUser = role !== "admin";
                                 const Icon = isUser ? UserRound : ShieldCheck;
                                 return (
                                     <button

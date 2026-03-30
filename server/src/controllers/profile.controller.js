@@ -1,8 +1,8 @@
-const profileService = require("../services/profile.service");
-const { success, error } = require("../utils/apiResponse");
+import * as profileService from "../services/profile.service.js";
+import { success, error } from "../utils/apiResponse.js";
 
 // GET /api/profile/me
-exports.getMe = async (req, res) => {
+export const getMe = async (req, res) => {
   try {
     const profile = await profileService.getMyProfile(req.user._id);
 
@@ -24,7 +24,7 @@ exports.getMe = async (req, res) => {
 };
 
 // PUT /api/profile/update
-exports.updateProfile = async (req, res) => {
+export const updateProfile = async (req, res) => {
   try {
     const { name, bio, skills, avatarUrl } = req.body;
 

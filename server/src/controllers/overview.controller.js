@@ -1,7 +1,7 @@
-const overviewService = require("../services/overview.service");
-const { success, error } = require("../utils/apiResponse");
+import * as overviewService from "../services/overview.service.js";
+import { success, error } from "../utils/apiResponse.js";
 
-exports.getStats = async (req, res) => {
+export const getStats = async (req, res) => {
   try {
     const stats = await overviewService.getStats(req.user._id);
     return success(res, stats);

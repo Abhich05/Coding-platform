@@ -67,6 +67,17 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 199 89% 48%;
+
+    /* ── Semantic alias tokens (used by feature branch components) ── */
+    --accent-strong: hsl(199, 89%, 48%);
+    --bg-primary: hsl(220, 20%, 97%);
+    --bg-secondary: hsl(220, 14%, 96%);
+    --panel: hsl(0, 0%, 100%);
+    --panel-soft: hsl(0, 0%, 100%);
+    --text-primary: hsl(222, 47%, 11%);
+    --text-secondary: hsl(220, 9%, 46%);
+    --error-bg: hsl(0, 84%, 60%, 0.1);
+    --error-text: hsl(0, 84%, 60%);
   }
 
   .dark {
@@ -106,6 +117,17 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 33% 17%;
     --sidebar-ring: 199 89% 48%;
+
+    /* ── Semantic alias tokens (dark) ── */
+    --accent-strong: hsl(199, 89%, 48%);
+    --bg-primary: hsl(222, 47%, 6%);
+    --bg-secondary: hsl(217, 33%, 17%);
+    --panel: hsl(222, 47%, 11%);
+    --panel-soft: hsl(222, 47%, 9%);
+    --text-primary: hsl(210, 40%, 98%);
+    --text-secondary: hsl(215, 20%, 65%);
+    --error-bg: hsl(0, 62%, 30%, 0.3);
+    --error-text: hsl(0, 72%, 60%);
   }
 }
 
@@ -156,6 +178,140 @@
   .editor-panel {
     background: hsl(var(--editor-bg));
     color: hsl(var(--editor-foreground));
+  }
+
+  /* ── App Shell ──────────────────────────────────── */
+  .app-shell {
+    min-height: 100dvh;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  /* ── Surface Panels / Cards ─────────────────────── */
+  .surface-panel {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+  }
+
+  .surface-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .surface-card-dark {
+    background: hsl(var(--editor-bg));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    color: hsl(var(--editor-foreground));
+  }
+
+  /* ── Muted Text ──────────────────────────────────── */
+  .muted-text {
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* ── Input Field ─────────────────────────────────── */
+  .input-field {
+    width: 100%;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: calc(var(--radius) - 2px);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: hsl(var(--foreground));
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .input-field:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
+  }
+
+  .input-field::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* ── Status Card ─────────────────────────────────── */
+  .status-card {
+    border-radius: calc(var(--radius) - 2px);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+
+  .status-card.success {
+    background: hsl(142 76% 36% / 0.12);
+    color: hsl(142 60% 30%);
+    border-color: hsl(142 76% 36% / 0.3);
+  }
+
+  .status-card.error {
+    background: hsl(0 84% 60% / 0.1);
+    color: hsl(0 72% 45%);
+    border-color: hsl(0 84% 60% / 0.25);
+  }
+
+  /* ── Buttons ─────────────────────────────────────── */
+  .btn-primary,
+  .btn-solid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: none;
+    border-radius: calc(var(--radius) - 2px);
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-primary:hover:not(:disabled),
+  .btn-solid:hover:not(:disabled) {
+    opacity: 0.9;
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.35);
+  }
+
+  .btn-primary:disabled,
+  .btn-solid:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border));
+    border-radius: calc(var(--radius) - 2px);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    background: hsl(var(--secondary));
+    border-color: hsl(var(--muted-foreground) / 0.4);
+  }
+
+  .btn-ghost:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
   }
 }
 

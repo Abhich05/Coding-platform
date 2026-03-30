@@ -9,7 +9,7 @@ import SignUpPage from "../layouts/auth/SignUp";
 
 /* User Dashboard */
 import DashboardLayout from "../layouts/DashboardLayout";
-import DashboardHome from "../pages/Dashboard";
+import DashboardHome from "../pages/Dashboard/index";
 import Overview from "../pages/Dashboard/Overview";
 import Profile from "../pages/Dashboard/Profile";
 import Practise from "../pages/Dashboard/Practise";
@@ -17,6 +17,12 @@ import Aptitude from "../pages/Dashboard/Aptitude";
 import DSA from "../pages/Dashboard/DSA";
 import PracticeTest from "../pages/Dashboard/PracticeTest";
 import Jobs from "../pages/Dashboard/Jobs";
+
+/* Recruiter Pages (dev branch) */
+import RecruiterDashboard from "../pages/Dashboard";
+import RecruiterProblems from "../pages/Problems";
+import AssessmentPage from "../pages/Assessment";
+import CandidateJoin from "../pages/CandidateJoin";
 
 /* Admin */
 import AdminDashboardLayout from "../layouts/AdminDashboardLayout";
@@ -53,7 +59,9 @@ const ProtectedRoute: FC<{
   if (role && user?.role !== role) {
     return user?.role === "admin"
       ? <Navigate to="/admin/overview" replace />
-      : <Navigate to="/dashboard/overview" replace />;
+      : user?.role === "recruiter"
+        ? <Navigate to="/recruiter/dashboard" replace />
+        : <Navigate to="/dashboard/overview" replace />;
   }
 
   return <>{children}</>;
@@ -82,20 +90,46 @@ const AppRouter: FC = () => {
             ? <Navigate to="/auth/signin" replace />
             : user?.role === "admin"
               ? <Navigate to="/admin/overview" replace />
-              : <Navigate to="/dashboard/overview" replace />
+              : user?.role === "recruiter"
+                ? <Navigate to="/recruiter/dashboard" replace />
+                : <Navigate to="/dashboard/overview" replace />
         }
       />
 
       {/* ⭐ AUTH */}
       <Route path="/auth/signin" element={<SignInPage />} />
+      <Route path="/auth/login" element={<Navigate to="/auth/signin" replace />} />
       <Route path="/auth/signup" element={<SignUpPage />} />
+
+
+      {/* ⭐ RECRUITER PAGES */}
+      <Route
+        path="/recruiter/dashboard"
+        element={
+          <ProtectedRoute role="recruiter">
+            <RecruiterDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/recruiter/problems"
+        element={
+          <ProtectedRoute role="recruiter">
+            <RecruiterProblems />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ⭐ ASSESSMENT / CODE EDITOR */}
+      <Route path="/assessment" element={<AssessmentPage />} />
+      <Route path="/candidate/join" element={<CandidateJoin />} />
 
 
       {/* ⭐ USER DASHBOARD */}
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute role="user">
+          <ProtectedRoute>
             <DashboardLayout />
           </ProtectedRoute>
         }

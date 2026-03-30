@@ -14,7 +14,7 @@ const SignUpPage: React.FC = () => {
         fullName: "",
         password: "",
         confirmPassword: "",
-        role: "user",
+        role: "candidate",
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -63,10 +63,10 @@ const SignUpPage: React.FC = () => {
 
         try {
             await authService.register({
+                name: formData.fullName || formData.email.split("@")[0],
                 email: formData.email,
-                fullName: formData.fullName || formData.email.split("@")[0],
                 password: formData.password,
-                role: formData.role,
+                role: formData.role as 'recruiter' | 'admin' | 'candidate',
             });
 
             setStatus({ type: "success", message: "Account created successfully. Redirecting to sign in..." });
@@ -193,9 +193,9 @@ const SignUpPage: React.FC = () => {
                     <div>
                         <label className="block text-xs font-semibold mb-1.5 muted-text">Account role</label>
                         <div className="flex flex-col gap-2">
-                            {["user", "admin"].map((role) => {
-                                const isUser = role === "user";
-                                const Icon = isUser ? UserRound : ShieldCheck;
+                            {["candidate", "recruiter"].map((role) => {
+                                const isCandidate = role === "candidate";
+                                const Icon = isCandidate ? UserRound : ShieldCheck;
                                 return (
                                     <button
                                         key={role}

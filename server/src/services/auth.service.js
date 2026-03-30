@@ -1,8 +1,8 @@
-const userModel = require('../models/User');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+import userModel from '../models/User.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
-exports.register = async (userData) => {
+export const register = async (userData) => {
     const { email, password, fullName, role } = userData;
     const userDetail = await userModel.findOne({ email });
 
@@ -19,7 +19,7 @@ exports.register = async (userData) => {
         role: (role || "user").toLowerCase(),
     })
 }
-exports.login = async (userData) => {
+export const login = async (userData) => {
     const { email, password, role } = userData;
     const user = await userModel.findOne({ email });
     if (!user) {
@@ -35,7 +35,7 @@ exports.login = async (userData) => {
     return user;
 }
 
-exports.generateToken = async (user) => {
+export const generateToken = async (user) => {
     return jwt.sign({
         id: user._id,
         email: user.email,

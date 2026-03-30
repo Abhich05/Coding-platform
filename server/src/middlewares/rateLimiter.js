@@ -13,7 +13,7 @@ export const apiLimiter = rateLimit({
 
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 requests per windowMs for auth routes
+  max: process.env.NODE_ENV === 'development' ? 100 : 5,
   message: {
     success: false,
     message: 'Too many authentication attempts, please try again later.'

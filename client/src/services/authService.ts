@@ -3,13 +3,14 @@ import apiClient from '../lib/apiClient';
 export interface LoginData {
   email: string;
   password: string;
+  role?: string;
 }
 
 export interface RegisterData {
   name: string;
   email: string;
   password: string;
-  role?: 'recruiter' | 'admin';
+  role?: 'recruiter' | 'admin' | 'candidate';
   company?: string;
 }
 

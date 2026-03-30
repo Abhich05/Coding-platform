@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import JobCard from "../../components/JobCard";
+import apiClient from "../../lib/apiClient";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/jobs")
-      .then(res => res.json())
-      .then(data => {
-        setJobs(data.data);
-      });
+    apiClient.get("/jobs")
+      .then(res => {
+        setJobs(res.data?.data ?? res.data ?? []);
+      })
+      .catch(() => setJobs([]));
   }, []);
 
   return (

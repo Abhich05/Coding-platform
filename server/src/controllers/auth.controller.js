@@ -1,5 +1,5 @@
-const userModel=require('../models/User');
-const authService=require('../services/auth.service');
+import userModel from '../models/User.js';
+import * as authService from '../services/auth.service.js';
 
 async function registerUser(req,res){
   try{
@@ -46,8 +46,4 @@ async function loginUser(req,res){
 
 
 
-module.exports = {
-    registerUser,
-    loginUser,
-   
-};
+export { registerUser, loginUser };

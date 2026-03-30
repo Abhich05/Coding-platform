@@ -97,7 +97,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate('/problems')}>
+            <Button variant="ghost" onClick={() => navigate('/recruiter/problems')}>
               Problems
             </Button>
             <div className="relative w-64">

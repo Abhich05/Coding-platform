@@ -1,28 +1,28 @@
-import axiosInstance from "./axiosInstance";
+import apiClient from "../lib/apiClient";
 
 export const adminService = {
     getStats: async () => {
-        const res = await axiosInstance.get("/admin/stats");
+        const res = await apiClient.get("/admin/stats");
         return res.data?.data ?? res.data;
     },
     getUsers: async () => {
-        const res = await axiosInstance.get("/admin/users");
+        const res = await apiClient.get("/admin/users");
         return res.data?.data ?? res.data;
     },
     createTest: async (payload: any) => {
-        const res = await axiosInstance.post("/admin/tests", payload);
+        const res = await apiClient.post("/admin/tests", payload);
         return res.data?.data ?? res.data;
     },
     listTests: async () => {
-        const res = await axiosInstance.get("/admin/tests");
+        const res = await apiClient.get("/admin/tests");
         return res.data?.data ?? res.data;
     },
     getTestResults: async (testId: string) => {
-        const res = await axiosInstance.get(`/admin/tests/${testId}/results`);
+        const res = await apiClient.get(`/admin/tests/${testId}/results`);
         return res.data?.data ?? res.data;
     },
     sendTestLink: async (testId: string, email: string) => {
-        const res = await axiosInstance.post(`/admin/tests/${testId}/send-link`, { email });
+        const res = await apiClient.post(`/admin/tests/${testId}/send-link`, { email });
         return res.data?.data ?? res.data;
     },
 };

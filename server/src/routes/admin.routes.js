@@ -1,9 +1,10 @@
-const express = require("express");
+import express from "express";
+import User from "../models/User.js";
+import { auth, requireAdmin } from "../middlewares/auth.middleware.js";
+import { createTest, listTests, getTestResults, sendTestLink } from "../controllers/test.controller.js";
+import { getAdminStats, getAdminOverview } from "../controllers/admin.controller.js";
+
 const router = express.Router();
-const User = require("../models/User");
-const { auth, requireAdmin } = require("../middlewares/auth.middleware");
-const { createTest, listTests, getTestResults, sendTestLink } = require("../controllers/test.controller");
-const { getAdminStats, getAdminOverview } = require("../controllers/admin.controller");
 
 // Protect all admin routes
 router.use(auth, requireAdmin);
@@ -33,4 +34,4 @@ router.get("/tests", listTests);
 router.get("/tests/:testId/results", getTestResults);
 router.post("/tests/:testId/send-link", sendTestLink);
 
-module.exports = router;
+export default router;
